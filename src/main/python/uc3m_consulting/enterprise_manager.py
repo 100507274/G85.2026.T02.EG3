@@ -169,8 +169,8 @@ class EnterpriseManager:
                 missing data, or cryptographic integrity failure.
         """
         fecha_patrón = re.compile(r"^(([0-2]\d|3[0-1])\/(0\d|1[0-2])\/\d\d\d\d)$")
-        res = fecha_patrón.fullmatch(date_str)
-        if not res:
+        fecha_valida = fecha_patrón.fullmatch(date_str)
+        if not fecha_valida:
             raise EnterpriseManagementException("Invalid date format")
 
         try:
