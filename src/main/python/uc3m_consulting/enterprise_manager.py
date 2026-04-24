@@ -93,8 +93,8 @@ class EnterpriseManager:
         proy_acro_valida = proy_acro_patrón.fullmatch(project_acronym)
         if not proy_acro_valida:
             raise EnterpriseManagementException("Invalid acronym")
-        md = re.compile(r"^.{10,30}$")
-        res = md.fullmatch(project_description)
+        proy_desc_patrón = re.compile(r"^.{10,30}$")
+        res = proy_desc_patrón.fullmatch(project_description)
         if not res:
             raise EnterpriseManagementException("Invalid description format")
 
