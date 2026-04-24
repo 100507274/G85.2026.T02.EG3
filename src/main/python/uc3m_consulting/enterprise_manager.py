@@ -149,6 +149,7 @@ class EnterpriseManager:
         return doc_valida_counter
 
     def _validación_de_fecha(self, date_str):
+        """validates date format"""
         fecha_patrón = re.compile(r"^(([0-2]\d|3[0-1])\/(0\d|1[0-2])\/\d\d\d\d)$")
         fecha_valida = fecha_patrón.fullmatch(date_str)
         if not fecha_valida:
@@ -160,6 +161,7 @@ class EnterpriseManager:
             raise EnterpriseManagementException("Invalid date format") from ex
 
     def validate_project_and_dpt(self,project_acronym,project_description,department):
+        """validates acronym and description format and department"""
         proy_acro_patrón = re.compile(r"^[a-zA-Z0-9]{5,10}")
         proy_acro_valida = proy_acro_patrón.fullmatch(project_acronym)
         if not proy_acro_valida:
@@ -175,6 +177,7 @@ class EnterpriseManager:
             raise EnterpriseManagementException("Invalid department")
 
     def validate_budget(self, budget):
+        """validates budget format"""
         try:
             bdgt_as_float  = float(budget)
         except ValueError as exc:
