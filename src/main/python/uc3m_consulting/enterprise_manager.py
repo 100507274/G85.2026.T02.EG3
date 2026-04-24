@@ -79,19 +79,6 @@ class EnterpriseManager:
     def find_docs(self, date_str):
         """
         Generates a JSON report counting valid documents for a specific date.
-
-        Checks cryptographic hashes and timestamps to ensure historical data integrity.
-        Saves the output to 'resultado.json'.
-
-        Args:
-            date_str (str): date to query.
-
-        Returns:
-            number of documents found if report is successfully generated and saved.
-
-        Raises:
-            EnterpriseManagementException: On invalid date, file IO errors,
-                missing data, or cryptographic integrity failure.
         """
 
         self.validacion_de_fecha(date_str)
