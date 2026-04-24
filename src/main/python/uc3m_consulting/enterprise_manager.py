@@ -4,6 +4,7 @@ import json
 
 from datetime import datetime, timezone
 from freezegun import freeze_time
+from uc3m_consulting.attributes.attribute_cif import AttributeCIF
 from uc3m_consulting.enterprise_project import EnterpriseProject
 from uc3m_consulting.enterprise_management_exception import EnterpriseManagementException
 from uc3m_consulting.enterprise_manager_config import (PROJECTS_STORE_FILE,
@@ -15,51 +16,6 @@ class EnterpriseManager:
     """Class for providing the methods for managing the orders"""
     def __init__(self):
         pass
-
-    @staticmethod
-    def validate_cif(cif: str):
-        """validates a cif number """
-        if not isinstance(cif, str):
-            raise EnterpriseManagementException("CIF code must be a string")
-        cif_patrón = re.compile(r"^[ABCDEFGHJKNPQRSUVW]\d{7}[0-9A-J]$")
-        if not cif_patrón.fullmatch(cif):
-            raise EnterpriseManagementException("Invalid CIF format")
-
-        cif_letra_inicial = cif[0]
-        cif_intermedio = cif[1:8]
-        cif_control = cif[8]
-
-        cif_sum_impar = 0
-        cif_sum_par = 0
-
-        for i in range(len(cif_intermedio)):
-            if i % 2 == 0:
-                x = int(cif_intermedio[i]) * 2
-                if x > 9:
-                    cif_sum_impar = cif_sum_impar + (x // 10) + (x % 10)
-                else:
-                    cif_sum_impar = cif_sum_impar + x
-            else:
-                cif_sum_par = cif_sum_par + int(cif_intermedio[i])
-
-        cif_suma_total = cif_sum_impar + cif_sum_par
-        cif_resta = cif_suma_total % 10
-        cif_resta_control = 10 - cif_resta
-
-        if cif_resta_control == 10:
-            cif_resta_control = 0
-
-        cif_diccionario = "JABCDEFGHI"
-
-        if cif_letra_inicial in ('A', 'B', 'E', 'H'):
-            if str(cif_resta_control) != cif_control:
-                raise EnterpriseManagementException("Invalid CIF character control number")
-        elif cif_letra_inicial in ('P', 'Q', 'S', 'K'):
-            if cif_diccionario[cif_resta_control] != cif_control:
-                raise EnterpriseManagementException("Invalid CIF character control letter")
-        else:
-            raise EnterpriseManagementException("CIF type not supported")
-        return True
 
     def validate_starting_date(self, fecha):
         """validates the  date format  using regex"""
@@ -80,8 +36,26 @@ class EnterpriseManager:
                          date: str,
                          budget: str):
         """registers a new project"""
+<<<<<<< HEAD
         self.validate_cif(company_cif)
         self.validate_project_and_dpt(project_acronym,project_description,department)
+=======
+        AttributeCIF(company_cif).validate()
+        proy_acro_patrón = re.compile(r"^[a-zA-Z0-9]{5,10}")
+        proy_acro_valida = proy_acro_patrón.fullmatch(project_acronym)
+        if not proy_acro_valida:
+            raise EnterpriseManagementException("Invalid acronym")
+        proy_desc_patrón = re.compile(r"^.{10,30}$")
+        proy_desc_valida = proy_desc_patrón.fullmatch(project_description)
+        if not proy_desc_valida:
+            raise EnterpriseManagementException("Invalid description format")
+
+        proy_dept = re.compile(r"(HR|FINANCE|LEGAL|LOGISTICS)")
+        proy_dept_valida = proy_dept.fullmatch(department)
+        if not proy_dept_valida:
+            raise EnterpriseManagementException("Invalid department")
+
+>>>>>>> origin/main
         self.validate_starting_date(date)
 
         try:
