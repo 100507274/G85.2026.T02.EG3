@@ -29,20 +29,20 @@ class EnterpriseManager:
         cif_intermedio = cif[1:8]
         cif_control = cif[8]
 
-        s1 = 0
+        cif_sum_impar = 0
         s2 = 0
 
         for i in range(len(cif_intermedio)):
             if i % 2 == 0:
                 x = int(cif_intermedio[i]) * 2
                 if x > 9:
-                    s1 = s1 + (x // 10) + (x % 10)
+                    cif_sum_impar = cif_sum_impar + (x // 10) + (x % 10)
                 else:
-                    s1 = s1 + x
+                    cif_sum_impar = cif_sum_impar + x
             else:
                 s2 = s2 + int(cif_intermedio[i])
 
-        t = s1 + s2
+        t = cif_sum_impar + s2
         u2 = t % 10
         r = 10 - u2
 
