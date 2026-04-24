@@ -39,20 +39,9 @@ class EnterpriseManager:
         AttributeCIF(company_cif).validate()
         self.validate_project_and_dpt(project_acronym,project_description, department)
         AttributeStartingDate(date).validate()
+        self.validate_budget(budget)
 
-        try:
-            bdgt_as_float  = float(budget)
-        except ValueError as exc:
-            raise EnterpriseManagementException("Invalid budget amount") from exc
 
-        bdgt_as_str = str(bdgt_as_float)
-        if '.' in bdgt_as_str:
-            decimales = len(bdgt_as_str.split('.')[1])
-            if decimales > 2:
-                raise EnterpriseManagementException("Invalid budget amount")
-
-        if bdgt_as_float < 50000 or bdgt_as_float > 1000000:
-            raise EnterpriseManagementException("Invalid budget amount")
 
 
         new_project = EnterpriseProject(company_cif=company_cif,
@@ -185,4 +174,17 @@ class EnterpriseManager:
         if not proy_dept_valida:
             raise EnterpriseManagementException("Invalid department")
 
+    def validate_budget(self, budget):
+        try:
+            bdgt_as_float  = float(budget)
+        except ValueError as exc:
+            raise EnterpriseManagementException("Invalid budget amount") from exc
 
+        bdgt_as_str = str(bdgt_as_float)
+        if '.' in bdgt_as_str:
+            decimales = len(bdgt_as_str.split('.')[1])
+            if decimales > 2:
+                raise EnterpriseManagementException("Invalid budget amount")
+
+        if bdgt_as_float < 50000 or bdgt_as_float > 1000000:
+            raise EnterpriseManagementException("Invalid budget amount")
