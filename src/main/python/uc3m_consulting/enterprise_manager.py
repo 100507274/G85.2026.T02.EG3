@@ -140,19 +140,3 @@ class EnterpriseManager:
         except FileNotFoundError as ex:
             raise EnterpriseManagementException("Wrong file  or file path") from ex
         return doc_valida_counter
-
-    def validate_budget(self, budget):
-        """validates budget format"""
-        try:
-            bdgt_as_float  = float(budget)
-        except ValueError as exc:
-            raise EnterpriseManagementException("Invalid budget amount") from exc
-
-        bdgt_as_str = str(bdgt_as_float)
-        if '.' in bdgt_as_str:
-            decimales = len(bdgt_as_str.split('.')[1])
-            if decimales > 2:
-                raise EnterpriseManagementException("Invalid budget amount")
-
-        if bdgt_as_float < 50000 or bdgt_as_float > 1000000:
-            raise EnterpriseManagementException("Invalid budget amount")
