@@ -98,8 +98,8 @@ class EnterpriseManager:
         if not proy_desc_valida:
             raise EnterpriseManagementException("Invalid description format")
 
-        proy_acro_patrón = re.compile(r"(HR|FINANCE|LEGAL|LOGISTICS)")
-        res = proy_acro_patrón.fullmatch(department)
+        proy_dept = re.compile(r"(HR|FINANCE|LEGAL|LOGISTICS)")
+        res = proy_dept.fullmatch(department)
         if not res:
             raise EnterpriseManagementException("Invalid department")
 
