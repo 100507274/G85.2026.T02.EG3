@@ -197,8 +197,8 @@ class EnterpriseManager:
             doc_date_str = datetime.fromtimestamp(time_val).strftime("%d/%m/%Y")
 
             if doc_date_str == date_str:
-                d_obj = datetime.fromtimestamp(time_val, tz=timezone.utc)
-                with freeze_time(d_obj):
+                doc_timestamp = datetime.fromtimestamp(time_val, tz=timezone.utc)
+                with freeze_time(doc_timestamp):
                     # check the project id (thanks to freezetime)
                     # if project_id are different then the data has been
                     #manipulated
