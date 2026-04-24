@@ -89,8 +89,8 @@ class EnterpriseManager:
                          budget: str):
         """registers a new project"""
         self.validate_cif(company_cif)
-        cif_co_patrón = re.compile(r"^[a-zA-Z0-9]{5,10}")
-        res = cif_co_patrón.fullmatch(project_acronym)
+        proy_acro_patrón = re.compile(r"^[a-zA-Z0-9]{5,10}")
+        res = proy_acro_patrón.fullmatch(project_acronym)
         if not res:
             raise EnterpriseManagementException("Invalid acronym")
         md = re.compile(r"^.{10,30}$")
@@ -98,8 +98,8 @@ class EnterpriseManager:
         if not res:
             raise EnterpriseManagementException("Invalid description format")
 
-        cif_co_patrón = re.compile(r"(HR|FINANCE|LEGAL|LOGISTICS)")
-        res = cif_co_patrón.fullmatch(department)
+        proy_acro_patrón = re.compile(r"(HR|FINANCE|LEGAL|LOGISTICS)")
+        res = proy_acro_patrón.fullmatch(department)
         if not res:
             raise EnterpriseManagementException("Invalid department")
 
