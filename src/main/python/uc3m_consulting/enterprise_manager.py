@@ -106,17 +106,17 @@ class EnterpriseManager:
         self.validate_starting_date(date)
 
         try:
-            f_bdgt  = float(budget)
+            bdgt_as_float  = float(budget)
         except ValueError as exc:
             raise EnterpriseManagementException("Invalid budget amount") from exc
 
-        bdgt_as_str = str(f_bdgt)
+        bdgt_as_str = str(bdgt_as_float)
         if '.' in bdgt_as_str:
             decimales = len(bdgt_as_str.split('.')[1])
             if decimales > 2:
                 raise EnterpriseManagementException("Invalid budget amount")
 
-        if f_bdgt < 50000 or f_bdgt > 1000000:
+        if bdgt_as_float < 50000 or bdgt_as_float > 1000000:
             raise EnterpriseManagementException("Invalid budget amount")
 
 
