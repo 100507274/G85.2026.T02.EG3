@@ -61,15 +61,15 @@ class EnterpriseManager:
             raise EnterpriseManagementException("CIF type not supported")
         return True
 
-    def validate_starting_date(self, t_d):
+    def validate_starting_date(self, fecha):
         """validates the  date format  using regex"""
-        mr = re.compile(r"^(([0-2]\d|3[0-1])\/(0\d|1[0-2])\/\d\d\d\d)$")
-        res = mr.fullmatch(t_d)
-        if not res:
+        fecha_patrón = re.compile(r"^(([0-2]\d|3[0-1])\/(0\d|1[0-2])\/\d\d\d\d)$")
+        fecha_valida = fecha_patrón.fullmatch(fecha)
+        if not fecha_valida:
             raise EnterpriseManagementException("Invalid date format")
 
         try:
-            my_date = datetime.strptime(t_d, "%d/%m/%Y").date()
+            my_date = datetime.strptime(fecha, "%d/%m/%Y").date()
         except ValueError as ex:
             raise EnterpriseManagementException("Invalid date format") from ex
 
@@ -78,7 +78,7 @@ class EnterpriseManager:
 
         if my_date.year < 2025 or my_date.year > 2050:
             raise EnterpriseManagementException("Invalid date format")
-        return t_d
+        return fecha
     #pylint: disable=too-many-arguments, too-many-positional-arguments
     def register_project(self,
                          company_cif: str,
@@ -89,34 +89,34 @@ class EnterpriseManager:
                          budget: str):
         """registers a new project"""
         self.validate_cif(company_cif)
-        mr = re.compile(r"^[a-zA-Z0-9]{5,10}")
-        res = mr.fullmatch(project_acronym)
-        if not res:
+        proy_acro_patrón = re.compile(r"^[a-zA-Z0-9]{5,10}")
+        proy_acro_valida = proy_acro_patrón.fullmatch(project_acronym)
+        if not proy_acro_valida:
             raise EnterpriseManagementException("Invalid acronym")
-        md = re.compile(r"^.{10,30}$")
-        res = md.fullmatch(project_description)
-        if not res:
+        proy_desc_patrón = re.compile(r"^.{10,30}$")
+        proy_desc_valida = proy_desc_patrón.fullmatch(project_description)
+        if not proy_desc_valida:
             raise EnterpriseManagementException("Invalid description format")
 
-        mr = re.compile(r"(HR|FINANCE|LEGAL|LOGISTICS)")
-        res = mr.fullmatch(department)
-        if not res:
+        proy_dept = re.compile(r"(HR|FINANCE|LEGAL|LOGISTICS)")
+        proy_dept_valida = proy_dept.fullmatch(department)
+        if not proy_dept_valida:
             raise EnterpriseManagementException("Invalid department")
 
         self.validate_starting_date(date)
 
         try:
-            f_bdgt  = float(budget)
+            bdgt_as_float  = float(budget)
         except ValueError as exc:
             raise EnterpriseManagementException("Invalid budget amount") from exc
 
-        n_str = str(f_bdgt)
-        if '.' in n_str:
-            decimales = len(n_str.split('.')[1])
+        bdgt_as_str = str(bdgt_as_float)
+        if '.' in bdgt_as_str:
+            decimales = len(bdgt_as_str.split('.')[1])
             if decimales > 2:
                 raise EnterpriseManagementException("Invalid budget amount")
 
-        if f_bdgt < 50000 or f_bdgt > 1000000:
+        if bdgt_as_float < 50000 or bdgt_as_float > 1000000:
             raise EnterpriseManagementException("Invalid budget amount")
 
 
@@ -129,21 +129,21 @@ class EnterpriseManager:
 
         try:
             with open(PROJECTS_STORE_FILE, "r", encoding="utf-8", newline="") as file:
-                t_l = json.load(file)
+                proy_list = json.load(file)
         except FileNotFoundError:
-            t_l = []
+            proy_list = []
         except json.JSONDecodeError as ex:
             raise EnterpriseManagementException("JSON Decode Error - Wrong JSON Format") from ex
 
-        for t_i in t_l:
-            if t_i == new_project.to_json():
+        for proy_existente in proy_list:
+            if proy_existente == new_project.to_json():
                 raise EnterpriseManagementException("Duplicated project in projects list")
 
-        t_l.append(new_project.to_json())
+        proy_list.append(new_project.to_json())
 
         try:
             with open(PROJECTS_STORE_FILE, "w", encoding="utf-8", newline="") as file:
-                json.dump(t_l, file, indent=2)
+                json.dump(proy_list, file, indent=2)
         except FileNotFoundError as ex:
             raise EnterpriseManagementException("Wrong file  or file path") from ex
         except json.JSONDecodeError as ex:
@@ -168,9 +168,9 @@ class EnterpriseManager:
             EnterpriseManagementException: On invalid date, file IO errors,
                 missing data, or cryptographic integrity failure.
         """
-        mr = re.compile(r"^(([0-2]\d|3[0-1])\/(0\d|1[0-2])\/\d\d\d\d)$")
-        res = mr.fullmatch(date_str)
-        if not res:
+        fecha_patrón = re.compile(r"^(([0-2]\d|3[0-1])\/(0\d|1[0-2])\/\d\d\d\d)$")
+        fecha_valida = fecha_patrón.fullmatch(date_str)
+        if not fecha_valida:
             raise EnterpriseManagementException("Invalid date format")
 
         try:
@@ -182,39 +182,39 @@ class EnterpriseManager:
         # open documents
         try:
             with open(TEST_DOCUMENTS_STORE_FILE, "r", encoding="utf-8", newline="") as file:
-                d_list = json.load(file)
+                doc_list = json.load(file)
         except FileNotFoundError as ex:
             raise EnterpriseManagementException("Wrong file  or file path") from ex
 
 
-        rst = 0
+        doc_valida_counter = 0
 
         # loop to find
-        for el in d_list:
-            time_val = el["register_date"]
+        for doc_actual in doc_list:
+            time_val = doc_actual["register_date"]
 
             # string conversion for easy match
             doc_date_str = datetime.fromtimestamp(time_val).strftime("%d/%m/%Y")
 
             if doc_date_str == date_str:
-                d_obj = datetime.fromtimestamp(time_val, tz=timezone.utc)
-                with freeze_time(d_obj):
+                doc_timestamp = datetime.fromtimestamp(time_val, tz=timezone.utc)
+                with freeze_time(doc_timestamp):
                     # check the project id (thanks to freezetime)
                     # if project_id are different then the data has been
                     #manipulated
-                    p = ProjectDocument(el["project_id"], el["file_name"])
-                    if p.document_signature == el["document_signature"]:
-                        rst = rst + 1
+                    doc_analysis = ProjectDocument(doc_actual["project_id"], doc_actual["file_name"])
+                    if doc_analysis.document_signature == doc_actual["document_signature"]:
+                        doc_valida_counter = doc_valida_counter + 1
                     else:
                         raise EnterpriseManagementException("Inconsistent document signature")
 
-        if rst == 0:
+        if doc_valida_counter == 0:
             raise EnterpriseManagementException("No documents found")
         # prepare json text
         now_str = datetime.now(timezone.utc).timestamp()
-        s = {"Querydate":  date_str,
+        memoria_busqueda = {"Querydate":  date_str,
              "ReportDate": now_str,
-             "Numfiles": rst
+             "Numfiles": doc_valida_counter
              }
 
         try:
@@ -224,10 +224,10 @@ class EnterpriseManager:
             dl = []
         except json.JSONDecodeError as ex:
             raise EnterpriseManagementException("JSON Decode Error - Wrong JSON Format") from ex
-        dl.append(s)
+        dl.append(memoria_busqueda)
         try:
             with open(TEST_NUMDOCS_STORE_FILE, "w", encoding="utf-8", newline="") as file:
                 json.dump(dl, file, indent=2)
         except FileNotFoundError as ex:
             raise EnterpriseManagementException("Wrong file  or file path") from ex
-        return rst
+        return doc_valida_counter
