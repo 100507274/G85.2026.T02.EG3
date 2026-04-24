@@ -5,6 +5,7 @@ import json
 from datetime import datetime, timezone
 from freezegun import freeze_time
 from uc3m_consulting.attributes.attribute_cif import AttributeCIF
+from uc3m_consulting.attributes.attribute_starting_date import AttributeStartingDate
 from uc3m_consulting.enterprise_project import EnterpriseProject
 from uc3m_consulting.enterprise_management_exception import EnterpriseManagementException
 from uc3m_consulting.enterprise_manager_config import (PROJECTS_STORE_FILE,
@@ -19,7 +20,7 @@ class EnterpriseManager:
 
     def validate_starting_date(self, fecha):
         """validates the  date format  using regex"""
-        my_date=self._validación_de_fecha(fecha)
+        my_date=self.validacion_de_fecha(fecha)
 
         if my_date < datetime.now(timezone.utc).date():
             raise EnterpriseManagementException("Project's date must be today or later.")
@@ -93,7 +94,7 @@ class EnterpriseManager:
                 missing data, or cryptographic integrity failure.
         """
 
-        my_date=self._validación_de_fecha(date_str)
+        self.validacion_de_fecha(date_str)
 
         # open documents
         try:
@@ -118,7 +119,7 @@ class EnterpriseManager:
                     # check the project id (thanks to freezetime)
                     # if project_id are different then the data has been
                     #manipulated
-                    doc_analysis = ProjectDocument(doc_actual["project_id"], doc_actual["file_name"])
+                    doc_analysis=ProjectDocument(doc_actual["project_id"],doc_actual["file_name"])
                     if doc_analysis.document_signature == doc_actual["document_signature"]:
                         doc_valida_counter = doc_valida_counter + 1
                     else:
@@ -148,10 +149,10 @@ class EnterpriseManager:
             raise EnterpriseManagementException("Wrong file  or file path") from ex
         return doc_valida_counter
 
-    def _validación_de_fecha(self, date_str):
+    def validacion_de_fecha(self, date_str):
         """validates date format"""
-        fecha_patrón = re.compile(r"^(([0-2]\d|3[0-1])\/(0\d|1[0-2])\/\d\d\d\d)$")
-        fecha_valida = fecha_patrón.fullmatch(date_str)
+        fecha_patron = re.compile(r"^(([0-2]\d|3[0-1])\/(0\d|1[0-2])\/\d\d\d\d)$")
+        fecha_valida = fecha_patron.fullmatch(date_str)
         if not fecha_valida:
             raise EnterpriseManagementException("Invalid date format")
 
@@ -162,12 +163,12 @@ class EnterpriseManager:
 
     def validate_project_and_dpt(self,project_acronym,project_description,department):
         """validates acronym and description format and department"""
-        proy_acro_patrón = re.compile(r"^[a-zA-Z0-9]{5,10}")
-        proy_acro_valida = proy_acro_patrón.fullmatch(project_acronym)
+        proy_acro_patron = re.compile(r"^[a-zA-Z0-9]{5,10}")
+        proy_acro_valida = proy_acro_patron.fullmatch(project_acronym)
         if not proy_acro_valida:
             raise EnterpriseManagementException("Invalid acronym")
-        proy_desc_patrón = re.compile(r"^.{10,30}$")
-        proy_desc_valida = proy_desc_patrón.fullmatch(project_description)
+        proy_desc_patron = re.compile(r"^.{10,30}$")
+        proy_desc_valida = proy_desc_patron.fullmatch(project_description)
         if not proy_desc_valida:
             raise EnterpriseManagementException("Invalid description format")
 
