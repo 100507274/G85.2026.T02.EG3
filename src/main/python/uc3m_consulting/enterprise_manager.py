@@ -63,15 +63,7 @@ class EnterpriseManager:
 
     def validate_starting_date(self, fecha):
         """validates the  date format  using regex"""
-        fecha_patrón = re.compile(r"^(([0-2]\d|3[0-1])\/(0\d|1[0-2])\/\d\d\d\d)$")
-        fecha_valida = fecha_patrón.fullmatch(fecha)
-        if not fecha_valida:
-            raise EnterpriseManagementException("Invalid date format")
-
-        try:
-            my_date = datetime.strptime(fecha, "%d/%m/%Y").date()
-        except ValueError as ex:
-            raise EnterpriseManagementException("Invalid date format") from ex
+        my_date=self._validación_de_fecha(fecha)
 
         if my_date < datetime.now(timezone.utc).date():
             raise EnterpriseManagementException("Project's date must be today or later.")
@@ -168,16 +160,8 @@ class EnterpriseManager:
             EnterpriseManagementException: On invalid date, file IO errors,
                 missing data, or cryptographic integrity failure.
         """
-        fecha_patrón = re.compile(r"^(([0-2]\d|3[0-1])\/(0\d|1[0-2])\/\d\d\d\d)$")
-        fecha_valida = fecha_patrón.fullmatch(date_str)
-        if not fecha_valida:
-            raise EnterpriseManagementException("Invalid date format")
 
-        try:
-            my_date = datetime.strptime(date_str, "%d/%m/%Y").date()
-        except ValueError as ex:
-            raise EnterpriseManagementException("Invalid date format") from ex
-
+        my_date=self._validación_de_fecha(date_str)
 
         # open documents
         try:
@@ -231,3 +215,14 @@ class EnterpriseManager:
         except FileNotFoundError as ex:
             raise EnterpriseManagementException("Wrong file  or file path") from ex
         return doc_valida_counter
+
+    def _validación_de_fecha(self, date_str):
+        fecha_patrón = re.compile(r"^(([0-2]\d|3[0-1])\/(0\d|1[0-2])\/\d\d\d\d)$")
+        fecha_valida = fecha_patrón.fullmatch(date_str)
+        if not fecha_valida:
+            raise EnterpriseManagementException("Invalid date format")
+
+        try:
+            return datetime.strptime(date_str, "%d/%m/%Y").date()
+        except ValueError as ex:
+            raise EnterpriseManagementException("Invalid date format") from ex
