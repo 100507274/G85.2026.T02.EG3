@@ -81,20 +81,7 @@ class EnterpriseManager:
                          budget: str):
         """registers a new project"""
         self.validate_cif(company_cif)
-        proy_acro_patrón = re.compile(r"^[a-zA-Z0-9]{5,10}")
-        proy_acro_valida = proy_acro_patrón.fullmatch(project_acronym)
-        if not proy_acro_valida:
-            raise EnterpriseManagementException("Invalid acronym")
-        proy_desc_patrón = re.compile(r"^.{10,30}$")
-        proy_desc_valida = proy_desc_patrón.fullmatch(project_description)
-        if not proy_desc_valida:
-            raise EnterpriseManagementException("Invalid description format")
-
-        proy_dept = re.compile(r"(HR|FINANCE|LEGAL|LOGISTICS)")
-        proy_dept_valida = proy_dept.fullmatch(department)
-        if not proy_dept_valida:
-            raise EnterpriseManagementException("Invalid department")
-
+        self.validate_project_and_dpt(project_acronym,project_description,department)
         self.validate_starting_date(date)
 
         try:
@@ -226,3 +213,20 @@ class EnterpriseManager:
             return datetime.strptime(date_str, "%d/%m/%Y").date()
         except ValueError as ex:
             raise EnterpriseManagementException("Invalid date format") from ex
+
+    def validate_project_and_dpt(self,project_acronym,project_description,department):
+        proy_acro_patrón = re.compile(r"^[a-zA-Z0-9]{5,10}")
+        proy_acro_valida = proy_acro_patrón.fullmatch(project_acronym)
+        if not proy_acro_valida:
+            raise EnterpriseManagementException("Invalid acronym")
+        proy_desc_patrón = re.compile(r"^.{10,30}$")
+        proy_desc_valida = proy_desc_patrón.fullmatch(project_description)
+        if not proy_desc_valida:
+            raise EnterpriseManagementException("Invalid description format")
+
+        proy_dept = re.compile(r"(HR|FINANCE|LEGAL|LOGISTICS)")
+        proy_dept_valida = proy_dept.fullmatch(department)
+        if not proy_dept_valida:
+            raise EnterpriseManagementException("Invalid department")
+
+
