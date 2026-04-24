@@ -5,6 +5,8 @@ import json
 from datetime import datetime, timezone
 from freezegun import freeze_time
 from uc3m_consulting.attributes.attribute_cif import AttributeCIF
+from uc3m_consulting.attributes.attribute_starting_date import AttributeStartingDate
+from uc3m_consulting.attributes.attribute_project_and_dpt import AttributeProjectDpt
 from uc3m_consulting.enterprise_project import EnterpriseProject
 from uc3m_consulting.enterprise_management_exception import EnterpriseManagementException
 from uc3m_consulting.enterprise_manager_config import (PROJECTS_STORE_FILE,
@@ -17,16 +19,6 @@ class EnterpriseManager:
     def __init__(self):
         pass
 
-    def validate_starting_date(self, fecha):
-        """validates the  date format  using regex"""
-        my_date=self._validación_de_fecha(fecha)
-
-        if my_date < datetime.now(timezone.utc).date():
-            raise EnterpriseManagementException("Project's date must be today or later.")
-
-        if my_date.year < 2025 or my_date.year > 2050:
-            raise EnterpriseManagementException("Invalid date format")
-        return fecha
     #pylint: disable=too-many-arguments, too-many-positional-arguments
     def register_project(self,
                          company_cif: str,
@@ -37,8 +29,8 @@ class EnterpriseManager:
                          budget: str):
         """registers a new project"""
         AttributeCIF(company_cif).validate()
-        self.validate_project_and_dpt(project_acronym,project_description, department)
-        AttributeStartingDate(date).validate()
+        AttributeProjectDpt(project_acronym,project_description,department).validate()
+        AttributeStartingDate(date).validate_future()
         self.validate_budget(budget)
 
 
@@ -93,7 +85,7 @@ class EnterpriseManager:
                 missing data, or cryptographic integrity failure.
         """
 
-        my_date=self._validación_de_fecha(date_str)
+        my_date=AttributeStartingDate(date_str).validate()
 
         # open documents
         try:
@@ -147,18 +139,6 @@ class EnterpriseManager:
         except FileNotFoundError as ex:
             raise EnterpriseManagementException("Wrong file  or file path") from ex
         return doc_valida_counter
-
-    def _validación_de_fecha(self, date_str):
-        """validates date format"""
-        fecha_patrón = re.compile(r"^(([0-2]\d|3[0-1])\/(0\d|1[0-2])\/\d\d\d\d)$")
-        fecha_valida = fecha_patrón.fullmatch(date_str)
-        if not fecha_valida:
-            raise EnterpriseManagementException("Invalid date format")
-
-        try:
-            return datetime.strptime(date_str, "%d/%m/%Y").date()
-        except ValueError as ex:
-            raise EnterpriseManagementException("Invalid date format") from ex
 
     def validate_project_and_dpt(self,project_acronym,project_description,department):
         """validates acronym and description format and department"""
