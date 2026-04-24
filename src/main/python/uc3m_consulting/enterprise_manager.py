@@ -43,8 +43,8 @@ class EnterpriseManager:
                 cif_sum_par = cif_sum_par + int(cif_intermedio[i])
 
         cif_suma_total = cif_sum_impar + cif_sum_par
-        u2 = cif_suma_total % 10
-        r = 10 - u2
+        cif_resta = cif_suma_total % 10
+        r = 10 - cif_resta
 
         if r == 10:
             r = 0
