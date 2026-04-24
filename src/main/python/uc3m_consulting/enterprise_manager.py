@@ -5,6 +5,7 @@ import json
 from datetime import datetime, timezone
 from freezegun import freeze_time
 from uc3m_consulting.attributes.attribute_cif import AttributeCIF
+from uc3m_consulting.attributes.attribute_starting_date import AttributeStartingDate
 from uc3m_consulting.enterprise_project import EnterpriseProject
 from uc3m_consulting.enterprise_management_exception import EnterpriseManagementException
 from uc3m_consulting.enterprise_manager_config import (PROJECTS_STORE_FILE,
@@ -51,7 +52,7 @@ class EnterpriseManager:
         if not proy_dept_valida:
             raise EnterpriseManagementException("Invalid department")
 
-        self.validate_starting_date(date)
+        AttributeStartingDate(date).validate()
 
         try:
             bdgt_as_float  = float(budget)
