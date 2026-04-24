@@ -177,6 +177,7 @@ class EnterpriseManager:
             raise EnterpriseManagementException("Invalid department")
 
     def validate_budget(self, budget):
+        """validates budget format"""
         try:
             bdgt_as_float  = float(budget)
         except ValueError as exc:
