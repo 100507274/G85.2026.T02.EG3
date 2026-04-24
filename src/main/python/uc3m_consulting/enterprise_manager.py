@@ -219,15 +219,15 @@ class EnterpriseManager:
 
         try:
             with open(TEST_NUMDOCS_STORE_FILE, "r", encoding="utf-8", newline="") as file:
-                dl = json.load(file)
+                list_busqueda = json.load(file)
         except FileNotFoundError:
-            dl = []
+            list_busqueda = []
         except json.JSONDecodeError as ex:
             raise EnterpriseManagementException("JSON Decode Error - Wrong JSON Format") from ex
-        dl.append(memoria_busqueda)
+        list_busqueda.append(memoria_busqueda)
         try:
             with open(TEST_NUMDOCS_STORE_FILE, "w", encoding="utf-8", newline="") as file:
-                json.dump(dl, file, indent=2)
+                json.dump(list_busqueda, file, indent=2)
         except FileNotFoundError as ex:
             raise EnterpriseManagementException("Wrong file  or file path") from ex
         return doc_valida_counter
