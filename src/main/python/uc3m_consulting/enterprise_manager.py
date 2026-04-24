@@ -140,22 +140,6 @@ class EnterpriseManager:
             raise EnterpriseManagementException("Wrong file  or file path") from ex
         return doc_valida_counter
 
-    def validate_project_and_dpt(self,project_acronym,project_description,department):
-        """validates acronym and description format and department"""
-        proy_acro_patrón = re.compile(r"^[a-zA-Z0-9]{5,10}")
-        proy_acro_valida = proy_acro_patrón.fullmatch(project_acronym)
-        if not proy_acro_valida:
-            raise EnterpriseManagementException("Invalid acronym")
-        proy_desc_patrón = re.compile(r"^.{10,30}$")
-        proy_desc_valida = proy_desc_patrón.fullmatch(project_description)
-        if not proy_desc_valida:
-            raise EnterpriseManagementException("Invalid description format")
-
-        proy_dept = re.compile(r"(HR|FINANCE|LEGAL|LOGISTICS)")
-        proy_dept_valida = proy_dept.fullmatch(department)
-        if not proy_dept_valida:
-            raise EnterpriseManagementException("Invalid department")
-
     def validate_budget(self, budget):
         """validates budget format"""
         try:
