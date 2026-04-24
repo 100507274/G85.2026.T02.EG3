@@ -99,8 +99,8 @@ class EnterpriseManager:
             raise EnterpriseManagementException("Invalid description format")
 
         proy_dept = re.compile(r"(HR|FINANCE|LEGAL|LOGISTICS)")
-        res = proy_dept.fullmatch(department)
-        if not res:
+        proy_dept_valida = proy_dept.fullmatch(department)
+        if not proy_dept_valida:
             raise EnterpriseManagementException("Invalid department")
 
         self.validate_starting_date(date)
