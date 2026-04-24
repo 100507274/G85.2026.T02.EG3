@@ -7,6 +7,7 @@ from freezegun import freeze_time
 from uc3m_consulting.attributes.attribute_cif import AttributeCIF
 from uc3m_consulting.attributes.attribute_starting_date import AttributeStartingDate
 from uc3m_consulting.attributes.attribute_project_and_dpt import AttributeProjectDpt
+from uc3m_consulting.attributes.attribute_budget import AttributeBudget
 from uc3m_consulting.enterprise_project import EnterpriseProject
 from uc3m_consulting.enterprise_management_exception import EnterpriseManagementException
 from uc3m_consulting.enterprise_manager_config import (PROJECTS_STORE_FILE,
@@ -31,7 +32,7 @@ class EnterpriseManager:
         AttributeCIF(company_cif).validate()
         AttributeProjectDpt(project_acronym,project_description,department).validate()
         AttributeStartingDate(date).validate_future()
-        self.validate_budget(budget)
+        AttributeBudget(budget).validate()
 
 
 
