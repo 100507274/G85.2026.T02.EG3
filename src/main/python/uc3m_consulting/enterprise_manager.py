@@ -136,7 +136,8 @@ class EnterpriseManager:
             raise EnterpriseManagementException("Wrong file  or file path") from ex
         return doc_valida_counter
 
-    def validacion_de_fecha(self, date_str):
+    @staticmethod
+    def validacion_de_fecha(date_str):
         """validates date format"""
         fecha_patron = re.compile(r"^(([0-2]\d|3[0-1])\/(0\d|1[0-2])\/\d\d\d\d)$")
         fecha_valida = fecha_patron.fullmatch(date_str)
@@ -148,7 +149,8 @@ class EnterpriseManager:
         except ValueError as ex:
             raise EnterpriseManagementException("Invalid date format") from ex
 
-    def validate_project_and_dpt(self,project_acronym,project_description,department):
+    @staticmethod
+    def validate_project_and_dpt(project_acronym, project_description, department):
         """validates acronym and description format and department"""
         proy_acro_patron = re.compile(r"^[a-zA-Z0-9]{5,10}")
         proy_acro_valida = proy_acro_patron.fullmatch(project_acronym)
@@ -164,7 +166,8 @@ class EnterpriseManager:
         if not proy_dept_valida:
             raise EnterpriseManagementException("Invalid department")
 
-    def validate_budget(self, budget):
+    @staticmethod
+    def validate_budget(budget):
         """validates budget format"""
         try:
             bdgt_as_float  = float(budget)
