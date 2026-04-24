@@ -4,6 +4,7 @@ import json
 
 from datetime import datetime, timezone
 from freezegun import freeze_time
+from uc3m_consulting.attributes.attribute_cif import AttributeCIF
 from uc3m_consulting.enterprise_project import EnterpriseProject
 from uc3m_consulting.enterprise_management_exception import EnterpriseManagementException
 from uc3m_consulting.enterprise_manager_config import (PROJECTS_STORE_FILE,
@@ -80,7 +81,7 @@ class EnterpriseManager:
                          date: str,
                          budget: str):
         """registers a new project"""
-        self.validate_cif(company_cif)
+        AttributeCIF(company_cif).validate()
         proy_acro_patrón = re.compile(r"^[a-zA-Z0-9]{5,10}")
         proy_acro_valida = proy_acro_patrón.fullmatch(project_acronym)
         if not proy_acro_valida:
